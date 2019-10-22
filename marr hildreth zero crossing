@@ -1,0 +1,38 @@
+function zero_crossing_pixel(image,laplace_filt1)
+
+edge_image = zeros(size(image));
+
+% determining threshold
+max_L=0;
+ for e_r= 1:size(laplace_filt1,1)
+     for e_c= 1: size(laplace_filt1,2)
+         if laplace_filt1(e_r,e_c)> max_L
+             max_L= laplace_filt1(e_r,e_c);
+         end
+     end
+ end   
+ 
+ % four conditions of zero crossing
+    th = 0.2;
+   for row =2:size(laplace_filt1,1)-1
+       for col = 2:size(laplace_filt1,2)-1
+           if (sign(laplace_filt1(row,col-1))~= sign(laplace_filt1(row,col+1))) && (abs(laplace_filt1(row,col-1) - laplace_filt1(row,col+1)) > th*max_L)
+               edge_image(row,col) = 255;
+           elseif (sign(laplace_filt1(row-1,col))~= sign(laplace_filt1(row+1,col))) && (abs(laplace_filt1(row-1,col) - laplace_filt1(row+1,col)) > th*max_L)
+               edge_image(row,col) = 255;
+           elseif (sign(laplace_filt1(row-1,col-1))~= sign(laplace_filt1(row+1,col+1))) && (abs(laplace_filt1(row-1,col-1) - laplace_filt1(row+1,col+1)) > th*max_L)
+               edge_image(row,col) = 255;
+           elseif (sign(laplace_filt1(row+1,col-1))~= sign(laplace_filt1(row-1,col+1))) && (abs(laplace_filt1(row-1,col+1)) > th*max_L)
+               edge_image(row,col) = 255;
+           else
+               edge_image(row,col) = 0;    
+           end
+       end
+   end
+  
+% display output image    
+zero_cross=uint8(edge_image);
+figure(4);
+imshow(zero_cross);
+title('Image after zero crossing');
+end
