@@ -1,0 +1,58 @@
+function non_max_supp(sobel_filt,sobel_filt_gradient)
+
+edge_image = zeros(size(image));
+
+
+ for e_r= 1:size(sobel_filt,1)
+     for e_c= 1: size(sobel_filt,2)
+         if sobel_filt_gradient(e_r,e_c)< 0
+             sobel_filt_gradient(e_r,e_c) = sobel_filt_gradient(e_r,e_c)+180;
+         end
+     end
+ end   
+ 
+ % Find the Thinner edge using four angle/gradient conditions
+  for r=2:size(sobel_filt,1)-1
+       for c=2:size(sobel_filt,2)-1
+           if (0<= sobel_filt_gradient(e_r,e_c) && sobel_filt_gradient(e_r,e_c) < 22.5) || (157.5 <= sobel_filt_gradient(e_r,e_c) && sobel_filt_gradient(e_r,e_c) <= 180) 
+               if (sobel_filt(r,c)>= sobel_filt(r,c+1)) && (sobel_filt(r,c)>= sobel_filt(r,c-1))
+                   edge_image(r,c) =  sobel_filt(r,c);
+               else
+                   edge_image(r,c) =  0;
+               end
+           
+           
+           elseif (22.5 <= sobel_filt_gradient(e_r,e_c) && sobel_filt_gradient(e_r,e_c) < 67.5) 
+               if (sobel_filt(r,c) >= sobel_filt(r+1,c+1)) && (sobel_filt(r,c) >= sobel_filt(r-1,c-1))
+                   edge_image(r,c) =  sobel_filt(r,c);
+               else
+                   edge_image(r,c) =  0;
+               end
+               
+               
+           elseif (67.5 <= sobel_filt_gradient(e_r,e_c) && sobel_filt_gradient(e_r,e_c) < 112.5) 
+               if (sobel_filt(r,c) >= sobel_filt(r+1,c)) && (sobel_filt(r,c) >= sobel_filt(r-1,c))
+                   edge_image(r,c) =  sobel_filt(r,c);
+               else
+                   edge_image(r,c) =  0;
+               end
+               
+               
+           elseif (112.5 <= sobel_filt_gradient(e_r,e_c) && sobel_filt_gradient(e_r,e_c) < 157.5) 
+               if (sobel_filt(r,c)>= sobel_filt(r-1,c+1)) && (sobel_filt(r,c)>= sobel_filt(r+1,c-1))
+                   edge_image(r,c) =  sobel_filt(r,c);
+               else
+                   edge_image(r,c) =  0;
+               end
+           end
+       end
+  end
+   
+edge_image=uint8(edge_image);
+figure(4);
+imshow(edge_image);
+title('Image after non max suppression');
+
+thresholding_and_hysteresis (edge_image);
+
+end
