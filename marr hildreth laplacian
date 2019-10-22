@@ -1,0 +1,30 @@
+function laplacian_filter(filter,gauss_filt1)
+
+ pad2=uint8(zeros(size(gauss_filt1)+2));
+
+   for i=1:size(gauss_filt1,1)
+       for j=1:size(gauss_filt1,2)
+           pad2(i+1,j+1)=gauss_filt1(i,j);
+       end
+   end
+    
+   pad2=double(pad2);
+
+
+% conv with laplace component
+   for k = 1:size(pad2,1)-2
+       for l = 1:size(pad2,2)-2
+           Temp2 = pad2(k:k+2,l:l+2).* filter;
+           laplace_filt1(k,l) = sum(Temp2(:));
+       end
+   end
+
+   LoG=uint8(laplace_filt1);
+   figure(3);
+   imshow(LoG);
+   title('Image after Laplacian');
+   
+   zero_crossing_pixel(image,laplace_filt1);
+    
+    
+end
