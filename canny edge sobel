@@ -1,0 +1,34 @@
+function Sobel_filter(gauss_filt1,kernel_matrix_1,kernel_matrix_2)
+
+
+     pad2=uint8(zeros(size(gauss_filt1)+2));
+
+     for x=1:size(gauss_filt1,1)
+         for y=1:size(gauss_filt1,2)
+             pad2(x+1,y+1)=gauss_filt1(x,y);
+         end
+     end
+
+     pad2=double(pad2);
+
+
+    for i = 1:size(pad2,1)-2
+        for j = 1:size(pad2,2)-2
+            Gx=sum(sum(kernel_matrix_1.*pad2(i:i+2,j:j+2)));
+            Gy=sum(sum(kernel_matrix_2.*pad2(i:i+2,j:j+2)));
+            sobel_filt(i,j) = sqrt(Gx.^2+Gy.^2);
+            sobel_filt_gradient(i,j) = atand(Gy /Gx);
+        end
+    end
+ 
+    sobel_filt1=uint8(sobel_filt);
+    figure(3);
+    imshow(sobel_filt1);
+    title('Image after sobel filter');
+    
+    non_max_supp(sobel_filt,sobel_filt_gradient);
+
+end
+
+
+
