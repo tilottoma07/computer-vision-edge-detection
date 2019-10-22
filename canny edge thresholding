@@ -1,0 +1,68 @@
+function thresholding_and_hysteresis (edge_image)
+
+threshold_image = zeros(size(edge_image));
+
+max_edge_image=0;
+
+ for t_r= 1:size(edge_image,1)
+     for t_c= 1: size(edge_image,2)
+         if edge_image(t_r,t_c)> max_edge_image
+              max_edge_image = edge_image(t_r,t_c);
+         end
+     end
+ end   
+ 
+    high_threshold = 0.175;
+    low_threshold = 0.075;
+    
+    strong = 255;
+    weak= 50;
+    zero = 0;
+    
+    %Thresholding of the Image Edge
+    
+    for row=1:size(edge_image,1)
+        for col=1:size(edge_image,2)
+            if edge_image(row,col) >= max_edge_image*high_threshold
+                threshold_image(row,col)= strong;
+            elseif (max_edge_image*low_threshold < edge_image(row,col))...
+                    &&  (edge_image(row,col) < max_edge_image*high_threshold)
+                threshold_image(row,col)= weak;
+            elseif (edge_image(row,col) < max_edge_image*low_threshold)
+                threshold_image(row,col)= zero;
+            end
+        end
+    end
+    
+ %Display Threshold Image   
+threshold_image=uint8(threshold_image);
+figure(5);
+imshow(threshold_image);
+title('Image after Thresholding');
+
+%Apply Hysteresis using 8 connectedness
+
+for row=2:size(threshold_image,1)-1
+        for col=2:size(threshold_image,2)-1
+            if threshold_image(row,col) == weak
+                if (threshold_image(row,col+1) == strong) || (threshold_image(row,col-1) == strong)...
+                        || (threshold_image(row+1,col) == strong) || (threshold_image(row,col+1) == strong)...
+                        || (threshold_image(row+1,col+1) == strong) || (threshold_image(row-1,col-1) == strong)...
+                        || (threshold_image(row-1,col+1) == strong) || (threshold_image(row+1,col-1) == strong)
+                    threshold_image(row,col) = strong;
+                
+                else
+                    threshold_image(row,col) = zero;
+                end
+            
+            end
+        end
+    end
+    
+%Display Final Image   
+hysteresis_image=uint8(threshold_image);
+figure(6);
+imshow(hysteresis_image);
+title('Image after Hysteresis');    
+
+end
