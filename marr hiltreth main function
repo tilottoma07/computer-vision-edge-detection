@@ -1,0 +1,16 @@
+function main_function()
+    clc;
+    clear all;
+    close all;
+    %Declaring a 3X3 laplace filter
+    filter = [1 1 1 ; 1 -8 1 ; 1 1 1];
+    
+    global image_number;
+    image_number = 0;
+
+   
+    %gaussian_filter('lena_gray_512.png', filter);
+    %gaussian_filter('lake.png', filter);
+    gaussian_filter('peppers_gray.png', filter);
+
+end
