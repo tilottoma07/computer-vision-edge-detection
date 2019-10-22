@@ -1,0 +1,56 @@
+function gaussian_filter(input_image_name,kernel_matrix_1,kernel_matrix_2)
+   
+    %Read the image
+    
+    global image_number;
+    image = imread(input_image_name);
+    image = 0.21*image(:,:,1)+0.72*image(:,:,2)+0.07*image(:,:,3);
+    [image_row, image_col] = size(image);
+    image_number = image_number + 1;
+    figure(image_number);
+    imshow(image);
+    title('Example image','FontSize',14);
+    drawnow;
+    pause(0.5);
+   
+    % Building the Gaussian Filter kernel
+    sigma= 1;
+    
+    %Building a 7X7 Gaussian kernel
+    kernel_size=3;
+    [x,y]=meshgrid(-kernel_size:kernel_size,-kernel_size:kernel_size);
+    Exp_comp = -(x.^2+y.^2)/(2*sigma*sigma);
+    gauss_kernel= exp(Exp_comp)/(2*pi*sigma*sigma);
+    gauss_kernel_sum= (sum(sum(gauss_kernel)));
+    Final_kernel= gauss_kernel/gauss_kernel_sum;
+    
+    % Zero Padding of the image
+    pad=uint8(zeros(size(image)+6));
+
+    for i=1:size(image,1)
+        for j=1:size(image,2)
+            pad(i+3,j+3)=image(i,j);
+        end
+    end
+    
+    pad=double(pad);
+    
+    % Convolution with the Gaussian Kernel
+    for k = 1:size(pad,1)-6
+        for l = 1:size(pad,2)-6
+            Temp = pad(k:k+6,l:l+6).* Final_kernel;
+            gauss_filt1(k,l) = sum(Temp(:));
+        end
+    end
+    
+    % Show the gaussian filtered image
+   
+    gauss_filt=uint8(gauss_filt1);
+    figure(2);
+    imshow(gauss_filt);
+    title('Image after gaussian filter');
+    
+   
+    Sobel_filter(gauss_filt1,kernel_matrix_1,kernel_matrix_2)
+  
+end
