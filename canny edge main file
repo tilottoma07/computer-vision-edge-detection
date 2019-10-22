@@ -1,0 +1,17 @@
+function main_function()
+    clc;
+    clear all;
+    close all;
+    %Declaring a 3X3 sobel filter matrix
+    kernel_matrix_1=[1 0 -1;2 0 -2; 1 0 -1];
+    kernel_matrix_2=[-1 -2 -1;0 0 0; 1 2 1];
+    
+    global image_number;
+    image_number = 0;
+
+   
+    %gaussian_filter('lena_gray_512.png',kernel_matrix_1,kernel_matrix_2);
+    %gaussian_filter('lake.png',kernel_matrix_1,kernel_matrix_2);
+    gaussian_filter('peppers_gray.png',kernel_matrix_1,kernel_matrix_2);
+
+end
